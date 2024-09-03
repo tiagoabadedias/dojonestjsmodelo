@@ -1,13 +1,12 @@
-import { Model } from 'mongoose';
-import { HttpException, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Customer } from './customer';
-import { throwError } from 'rxjs';
+import { InjectModel } from "@nestjs/mongoose";
+import { Injectable } from "@nestjs/common";
+import { Model, Types } from "mongoose";
+import { Customer } from "./customer";
 
 @Injectable()
 export class CustomerService {
   constructor(
-    @InjectModel(Customer.name) private customerModel: Model<Customer>,
+    @InjectModel(Customer.name) private customerModel: Model<Customer>
   ) {}
 
   async create(createCatDto: any): Promise<Customer> {
@@ -21,6 +20,10 @@ export class CustomerService {
   }
 
   async findById(id): Promise<Customer> {
-    return await this.customerModel.findById(id).exec();
+    return await this.customerModel.findById(new Types.ObjectId(id)).exec();
+  }
+
+  async delete(id) {
+    return await this.customerModel.deleteOne({ _id: id }).exec();
   }
 }
